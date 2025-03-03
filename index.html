@@ -7,7 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.20.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.12.16/framer-motion.umd.min.js"></script>
     <style>
         body {
             background: linear-gradient(to bottom right, #1a1a2e, #3a0ca3);
@@ -22,28 +21,33 @@
         .container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             text-align: center;
-            width: 350px;
+            width: 600px;
         }
         input, select, button {
             width: 100%;
             margin: 8px 0;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
         }
         input, select {
-            background: #444;
+            background: #333;
             color: white;
+            border: 1px solid #555;
         }
         button {
-            background: purple;
+            background: #6a0dad;
             color: white;
-            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #8b21db;
         }
         button:disabled {
             background: gray;
@@ -52,18 +56,18 @@
         pre {
             text-align: left;
             background: black;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
             overflow: auto;
+            max-height: 200px;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { motion } = window.framerMotion;
+        const { useState } = React;
 
         function TestAPI() {
             const [username, setUsername] = useState("");
@@ -74,7 +78,15 @@
             const [method, setMethod] = useState("udp");
             const [response, setResponse] = useState(null);
             const [loading, setLoading] = useState(false);
-            const methods = ["tls", "http", "udp", "tcp", "syn", "game-star"];
+            const methods = [
+                "tls", "http-bypass", "https", "http-rapid", "http",
+                "udqp", "udp-bypass", "ovh", "syn", "placehol", "udp-bypassv2",
+                "tcp-boom", "tcp-drop", "drp", "socket", "tcp-drop",
+                "dns-amp", "discord", "fortc", "godkill", "subnet", "soon.",
+                "tls-priv", "http-raw", "udp-star", "tcp-star", "ovh-star",
+                "game-star", "syn-star", "http-star", "http-hex", "cf-hex",
+                "tcp-hex", "udp-hex", "syn-hex", "ovh-hex", "game-hex"
+            ];
 
             const handleTestAPI = async () => {
                 setLoading(true);
@@ -90,7 +102,7 @@
             };
 
             return (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="container">
+                <div className="container">
                     <h1>Test Lone API</h1>
                     <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
                     <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -102,7 +114,7 @@
                     </select>
                     <button onClick={handleTestAPI} disabled={loading}>{loading ? "Testing..." : "Test API"}</button>
                     {response && <pre>{JSON.stringify(response, null, 2)}</pre>}
-                </motion.div>
+                </div>
             );
         }
         ReactDOM.render(<TestAPI />, document.getElementById("root"));
